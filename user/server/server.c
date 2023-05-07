@@ -7,6 +7,8 @@
 #include <arpa/inet.h>
 #include <unistd.h>
 
+#include "aes-encrypt.h"
+
 #define PORT 8080
 
 int main() {
@@ -21,10 +23,10 @@ int main() {
 
     // Server information
     memset(&servaddr, 0, sizeof(servaddr));
-    memset(&cliaddr, 0, sizeof(cliaddr));
     servaddr.sin_family = AF_INET;          // IPv4
     servaddr.sin_addr.s_addr = INADDR_ANY;  // Any available interface
     servaddr.sin_port = htons(PORT);
+
 
     // Bind the socket with the server address
     if (bind(sockfd, (const struct sockaddr *)&servaddr, sizeof(servaddr)) < 0 ) {
@@ -35,17 +37,21 @@ int main() {
     printf("UDP server listening on port %d\n", PORT);
 
     while (1) {
-        char buf[2];
+
+        unsigned char received_data[AES_BLOCK_SIZE];
         unsigned int len = sizeof(cliaddr);
         // Receive message from client
-        int n = recvfrom(sockfd, (char *)buf, sizeof(buf), MSG_WAITALL, (struct sockaddr *)&cliaddr, &len);
+        int n = recvfrom(sockfd, received_data, sizeof(received_data), MSG_WAITALL, (struct sockaddr *)&cliaddr, &len);
         if (n < 0 ) {
             printf("Couldn't receive message from client. recvfrom() failed");
             exit(EXIT_FAILURE);
         }
-        buf[n] = '\0';
-
-        printf("Received message: %s\n", buf);
+        received_data[n] = '\0';
+        printf("\033[32m Encrypted data received from client: \033[0m ");
+        for (int i = 0; i < sizeof(received_data); i++) {
+            printf("%02x", received_data[i]);
+        }
+        printf("\n");
     }
 
     close(sockfd);

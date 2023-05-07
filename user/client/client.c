@@ -1,12 +1,11 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <unistd.h>
 
-#define SERVER_IP "127.0.0.1"       //local host
+#include "aes-encrypt.h"
+
+#define SERVER_IP "127.0.0.1"       //localhost
 #define SERVER_PORT 8080
 
 int main() {
@@ -29,21 +28,51 @@ int main() {
         exit(EXIT_FAILURE);
     }
 
-    char buf[3];
-    while (1) {
-        printf("Enter button number to press: ");
-        fgets(buf, sizeof(buf), stdin);
+    while(1) {
+
+        // input validation loop 
+        int inputChar;
+        int nextChar = '\0';
+        int invalid = 0;
+        while(1){   // keep asking for the button to be pressed
+            printf("Enter the numpad button to press: ");
+            fflush(stdin); // clear the input buffer
+            inputChar = getchar();
+            while ((nextChar = getchar()) != '\n' && nextChar != EOF) { // Discard remaining characters and validate cases like 'ee', 44, 11, 'EE', etc
+                if(isdigit(nextChar) || (nextChar == 'E') || (nextChar == 'e')){
+                    invalid = 1;
+                }
+            } 
+            // validate the user input. Should be a numeric digit or the char "E"
+            if (((inputChar >= '0' && inputChar <= '9') || (inputChar == 'E') || (inputChar == 'e')) && !invalid) {
+                break;
+            }
+            invalid = 0;
+            printf("\033[31m Invalid input. Please type E (enter) or a number between 0 and 9.\033[0m\n");
+        }
+
+        // Encrypt the input data
+        unsigned char* encrypted_data = encrypt(inputChar);
+        // print the encrypted output
+        printf("Encrypted output: ");
+        for (int i = 0; i < AES_BLOCK_SIZE; i++) {
+            printf("%02x", encrypted_data[i]);
+        }
+        printf("\n");
 
         // send message to server
-        if (sendto(client_socket, buf, strlen(buf), MSG_CONFIRM,
+        if (sendto(client_socket, encrypted_data, strlen(encrypted_data), MSG_CONFIRM,
                     (const struct sockaddr *)&server_address, sizeof(server_address)) < 0) {
             printf("Error sending the number to server. sendto() error");
             exit(EXIT_FAILURE);
         }
 
-        printf("Message sent...\n");
+        printf("\033[32m Message sent...\033[0m\n");
         // clear the buffer
-        memset(buf, 0, sizeof(buf));
+
+        // Free the memory allocated for the encrypted data
+        free(encrypted_data);
+
     }
 
     close(client_socket);
