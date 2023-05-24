@@ -51,6 +51,12 @@ int main() {
         for (int i = 0; i < sizeof(received_data); i++) {
             printf("%02x", received_data[i]);
         }
+
+        //desencrypt
+        
+        //pasar num a biblioteca
+
+
         printf("\n");
     }
 
