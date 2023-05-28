@@ -20,3 +20,14 @@ unsigned char* encrypt(int inputChar) {
 
     return output;
 }
+unsigned char decrypt(unsigned char* encryptedData) {
+    unsigned char outputBuf[AES_BLOCK_SIZE];
+    memset(outputBuf, 0, AES_BLOCK_SIZE);
+
+    AES_KEY aes_key;
+    AES_set_decrypt_key(key, 128, &aes_key);
+
+    AES_cbc_encrypt(encryptedData, outputBuf, AES_BLOCK_SIZE, &aes_key, iv, AES_DECRYPT);
+
+    return outputBuf[0];
+}

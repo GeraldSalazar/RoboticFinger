@@ -8,6 +8,6 @@
 #include <ctype.h>
 
 unsigned char* encrypt(int inputChar);
-
+unsigned char decrypt(unsigned char* encryptedData);
 
 #endif
