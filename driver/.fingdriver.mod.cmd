@@ -1,0 +1,1 @@
+cmd_/home/gerald/Desktop/Dev/OS/ProyectoFinal/finger-driver/driver/fingdriver.mod := { echo  /home/gerald/Desktop/Dev/OS/ProyectoFinal/finger-driver/driver/fingdriver.o;  echo; } > /home/gerald/Desktop/Dev/OS/ProyectoFinal/finger-driver/driver/fingdriver.mod

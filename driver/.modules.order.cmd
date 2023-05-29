@@ -1,0 +1,1 @@
+cmd_/home/gerald/Desktop/Dev/OS/ProyectoFinal/finger-driver/driver/modules.order := {   echo /home/gerald/Desktop/Dev/OS/ProyectoFinal/finger-driver/driver/fingdriver.ko; :; } | awk '!x[$$0]++' - > /home/gerald/Desktop/Dev/OS/ProyectoFinal/finger-driver/driver/modules.order
