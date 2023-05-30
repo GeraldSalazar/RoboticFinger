@@ -7,7 +7,7 @@
 
 static struct usb_device_id fingdriver_table[] = {
     { USB_DEVICE(FT232R_VENDOR_ID, FT232R_PRODUCT_ID) },
-    { } /* Terminating entry */
+    { } 
 };
 MODULE_DEVICE_TABLE(usb, fingdriver_table);
 
@@ -20,7 +20,6 @@ static int fingdriver_probe(struct usb_interface *interface,
     printk(KERN_INFO "FT232R device plugged in: Vendor ID=0x%04X, Product ID=0x%04X\n",
            dev_desc->idVendor, dev_desc->idProduct);
 
-    /* Perform necessary initialization and communication with the FT232R device */
 
     return 0; /* Success */
 }
@@ -33,7 +32,6 @@ static void fingdriver_disconnect(struct usb_interface *interface)
     printk(KERN_INFO "FT232R device unplugged: Vendor ID=0x%04X, Product ID=0x%04X\n",
            dev_desc->idVendor, dev_desc->idProduct);
 
-    /* Perform necessary cleanup and release of resources */
 }
 
 static ssize_t fingdriver_write(struct file *filep, const char *buffer, size_t len, loff_t *offset)
