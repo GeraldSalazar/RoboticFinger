@@ -36,13 +36,13 @@ static void fingdriver_disconnect(struct usb_interface *interface)
 
 static ssize_t fingdriver_write(struct file *filep, const char *buffer, size_t len, loff_t *offset)
 {
-    
+    printk("Fingdriver write!!!! \n");
     return len; /* Return the number of bytes written */
 }
 
 static ssize_t fingdriver_read(struct file *filep, char *buffer, size_t len, loff_t *offset)
 {
-    
+    printk("Fingdriver read!!!! \n");
     return len; /* Return the number of bytes read */
 }
 
@@ -52,8 +52,6 @@ static struct usb_driver fingdriver_driver = {
     .probe = fingdriver_probe,
     .disconnect = fingdriver_disconnect,
 };
-
-static int fingdriver_major = 47; /* Major number for the driver */
 
 static int __init fingdriver_init(void)
 {
@@ -66,7 +64,7 @@ static int __init fingdriver_init(void)
         return result;
     }
 
-    printk(KERN_INFO "FT232R USB driver registered with major number %d\n", fingdriver_major);
+    printk(KERN_INFO "FT232R USB driver registered!! \n");
     return 0;
 }
 

@@ -28,17 +28,15 @@ MODULE_INFO(retpoline, "Y");
 static const struct modversion_info ____versions[]
 __used __section("__versions") = {
 	{ 0x32e21920, "module_layout" },
-	{ 0x9e2fb826, "filp_close" },
-	{ 0xa0c4c91b, "filp_open" },
-	{ 0x92997ed8, "_printk" },
-	{ 0xd0da656b, "__stack_chk_fail" },
+	{ 0xdf85ea06, "usb_deregister" },
+	{ 0xf63cc4cc, "usb_register_driver" },
 	{ 0x5b8239ca, "__x86_return_thunk" },
-	{ 0x9dd6fdc6, "vfs_write" },
-	{ 0x13c49cc2, "_copy_from_user" },
+	{ 0x92997ed8, "_printk" },
 	{ 0xbdfb6dbb, "__fentry__" },
 };
 
 MODULE_INFO(depends, "");
 
+MODULE_ALIAS("usb:v0403p6001d*dc*dsc*dp*ic*isc*ip*in*");
 
-MODULE_INFO(srcversion, "F4E05F87D7741F1BACA9CB4");
+MODULE_INFO(srcversion, "E2A46F9138B0BD015623585");

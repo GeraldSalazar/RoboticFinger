@@ -666,71 +666,34 @@ deps_/home/gerald/Desktop/Dev/OS/ProyectoFinal/finger-driver/driver/fingdriver.o
     $(wildcard include/config/MODULES_USE_ELF_REL) \
     $(wildcard include/config/MODULES_USE_ELF_RELA) \
   arch/x86/include/asm/orc_types.h \
-  include/linux/fs.h \
-    $(wildcard include/config/READ_ONLY_THP_FOR_FS) \
-    $(wildcard include/config/FS_POSIX_ACL) \
-    $(wildcard include/config/SECURITY) \
-    $(wildcard include/config/CGROUP_WRITEBACK) \
-    $(wildcard include/config/IMA) \
-    $(wildcard include/config/FILE_LOCKING) \
-    $(wildcard include/config/FSNOTIFY) \
-    $(wildcard include/config/FS_ENCRYPTION) \
-    $(wildcard include/config/FS_VERITY) \
-    $(wildcard include/config/EPOLL) \
-    $(wildcard include/config/UNICODE) \
-    $(wildcard include/config/QUOTA) \
-    $(wildcard include/config/BLK_DEV_LOOP) \
-    $(wildcard include/config/FS_DAX) \
-    $(wildcard include/config/BLOCK) \
-    $(wildcard include/config/MIGRATION) \
-  include/linux/wait_bit.h \
-  include/linux/kdev_t.h \
-  include/uapi/linux/kdev_t.h \
-  include/linux/dcache.h \
-  include/linux/rculist.h \
-    $(wildcard include/config/PROVE_RCU_LIST) \
-  include/linux/rculist_bl.h \
-  include/linux/list_bl.h \
-  include/linux/bit_spinlock.h \
-  include/linux/lockref.h \
-    $(wildcard include/config/ARCH_USE_CMPXCHG_LOCKREF) \
-  include/linux/stringhash.h \
-    $(wildcard include/config/DCACHE_WORD_ACCESS) \
-  include/linux/hash.h \
-    $(wildcard include/config/HAVE_ARCH_HASH) \
-  include/linux/path.h \
-  include/linux/list_lru.h \
-    $(wildcard include/config/MEMCG_KMEM) \
-  include/linux/shrinker.h \
-  include/linux/pid.h \
-  include/linux/capability.h \
-  include/uapi/linux/capability.h \
-  include/linux/semaphore.h \
-  include/linux/fcntl.h \
-    $(wildcard include/config/ARCH_32BIT_OFF_T) \
-  include/uapi/linux/fcntl.h \
-  arch/x86/include/generated/uapi/asm/fcntl.h \
-  include/uapi/asm-generic/fcntl.h \
-  include/uapi/linux/openat2.h \
-  include/linux/migrate_mode.h \
-  include/linux/percpu-rwsem.h \
-  include/linux/rcuwait.h \
-  include/linux/sched/signal.h \
-    $(wildcard include/config/SCHED_AUTOGROUP) \
-    $(wildcard include/config/BSD_PROCESS_ACCT) \
-    $(wildcard include/config/TASKSTATS) \
-    $(wildcard include/config/AUDIT) \
-    $(wildcard include/config/STACK_GROWSUP) \
-  include/linux/signal.h \
-    $(wildcard include/config/DYNAMIC_SIGFRAME) \
-  include/linux/signal_types.h \
-    $(wildcard include/config/OLD_SIGACTION) \
-  include/uapi/linux/signal.h \
-  arch/x86/include/asm/signal.h \
-  arch/x86/include/uapi/asm/signal.h \
-  include/uapi/asm-generic/signal-defs.h \
-  arch/x86/include/uapi/asm/siginfo.h \
-  include/uapi/asm-generic/siginfo.h \
+  include/linux/usb.h \
+    $(wildcard include/config/USB_MON) \
+    $(wildcard include/config/PM) \
+    $(wildcard include/config/ACPI) \
+    $(wildcard include/config/USB) \
+    $(wildcard include/config/USB_LED_TRIG) \
+  include/linux/mod_devicetable.h \
+  include/linux/uuid.h \
+  include/uapi/linux/uuid.h \
+  include/linux/usb/ch9.h \
+  include/linux/device.h \
+    $(wildcard include/config/ENERGY_MODEL) \
+    $(wildcard include/config/GENERIC_MSI_IRQ_DOMAIN) \
+    $(wildcard include/config/PINCTRL) \
+    $(wildcard include/config/GENERIC_MSI_IRQ) \
+    $(wildcard include/config/DMA_OPS) \
+    $(wildcard include/config/DMA_DECLARE_COHERENT) \
+    $(wildcard include/config/DMA_CMA) \
+    $(wildcard include/config/SWIOTLB) \
+    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_DEVICE) \
+    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_CPU) \
+    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_CPU_ALL) \
+    $(wildcard include/config/DMA_OPS_BYPASS) \
+    $(wildcard include/config/OF) \
+    $(wildcard include/config/DEVTMPFS) \
+    $(wildcard include/config/SYSFS_DEPRECATED) \
+  include/linux/dev_printk.h \
+  include/linux/ratelimit.h \
   include/linux/sched.h \
     $(wildcard include/config/VIRT_CPU_ACCOUNTING_NATIVE) \
     $(wildcard include/config/SCHED_INFO) \
@@ -758,9 +721,11 @@ deps_/home/gerald/Desktop/Dev/OS/ProyectoFinal/finger-driver/driver/fingdriver.o
     $(wildcard include/config/SYSVIPC) \
     $(wildcard include/config/DETECT_HUNG_TASK) \
     $(wildcard include/config/IO_URING) \
+    $(wildcard include/config/AUDIT) \
     $(wildcard include/config/AUDITSYSCALL) \
     $(wildcard include/config/UBSAN) \
     $(wildcard include/config/UBSAN_TRAP) \
+    $(wildcard include/config/BLOCK) \
     $(wildcard include/config/TASK_XACCT) \
     $(wildcard include/config/CPUSETS) \
     $(wildcard include/config/X86_CPU_RESCTRL) \
@@ -774,6 +739,7 @@ deps_/home/gerald/Desktop/Dev/OS/ProyectoFinal/finger-driver/driver/fingdriver.o
     $(wildcard include/config/FUNCTION_GRAPH_TRACER) \
     $(wildcard include/config/BCACHE) \
     $(wildcard include/config/VMAP_STACK) \
+    $(wildcard include/config/SECURITY) \
     $(wildcard include/config/BPF_SYSCALL) \
     $(wildcard include/config/GCC_PLUGIN_STACKLEAK) \
     $(wildcard include/config/X86_MCE) \
@@ -782,6 +748,9 @@ deps_/home/gerald/Desktop/Dev/OS/ProyectoFinal/finger-driver/driver/fingdriver.o
     $(wildcard include/config/ARCH_TASK_STRUCT_ON_STACK) \
     $(wildcard include/config/DEBUG_RSEQ) \
   include/uapi/linux/sched.h \
+  include/linux/pid.h \
+  include/linux/rculist.h \
+    $(wildcard include/config/PROVE_RCU_LIST) \
   include/linux/sem.h \
   include/uapi/linux/sem.h \
   include/linux/ipc.h \
@@ -828,6 +797,14 @@ deps_/home/gerald/Desktop/Dev/OS/ProyectoFinal/finger-driver/driver/fingdriver.o
   include/linux/latencytop.h \
   include/linux/sched/prio.h \
   include/linux/sched/types.h \
+  include/linux/signal_types.h \
+    $(wildcard include/config/OLD_SIGACTION) \
+  include/uapi/linux/signal.h \
+  arch/x86/include/asm/signal.h \
+  arch/x86/include/uapi/asm/signal.h \
+  include/uapi/asm-generic/signal-defs.h \
+  arch/x86/include/uapi/asm/siginfo.h \
+  include/uapi/asm-generic/siginfo.h \
   include/linux/syscall_user_dispatch.h \
   include/linux/task_io_accounting.h \
     $(wildcard include/config/TASK_IO_ACCOUNTING) \
@@ -840,83 +817,6 @@ deps_/home/gerald/Desktop/Dev/OS/ProyectoFinal/finger-driver/driver/fingdriver.o
   arch/x86/include/generated/asm/kmap_size.h \
   include/asm-generic/kmap_size.h \
     $(wildcard include/config/DEBUG_KMAP_LOCAL) \
-  include/linux/sched/jobctl.h \
-  include/linux/sched/task.h \
-    $(wildcard include/config/HAVE_EXIT_THREAD) \
-    $(wildcard include/config/ARCH_WANTS_DYNAMIC_TASK_STRUCT) \
-    $(wildcard include/config/HAVE_ARCH_THREAD_STRUCT_WHITELIST) \
-  include/linux/uaccess.h \
-    $(wildcard include/config/SET_FS) \
-  include/linux/fault-inject-usercopy.h \
-    $(wildcard include/config/FAULT_INJECTION_USERCOPY) \
-  arch/x86/include/asm/uaccess.h \
-    $(wildcard include/config/CC_HAS_ASM_GOTO_OUTPUT) \
-    $(wildcard include/config/CC_ASM_GOTO_OUTPUT) \
-    $(wildcard include/config/CC_HAS_ASM_GOTO_TIED_OUTPUT) \
-    $(wildcard include/config/ARCH_HAS_COPY_MC) \
-    $(wildcard include/config/X86_INTEL_USERCOPY) \
-  arch/x86/include/asm/smap.h \
-  arch/x86/include/asm/extable.h \
-    $(wildcard include/config/BPF_JIT) \
-  arch/x86/include/asm/uaccess_64.h \
-  include/linux/cred.h \
-    $(wildcard include/config/DEBUG_CREDENTIALS) \
-  include/linux/key.h \
-    $(wildcard include/config/KEY_NOTIFICATIONS) \
-    $(wildcard include/config/NET) \
-  include/linux/assoc_array.h \
-    $(wildcard include/config/ASSOCIATIVE_ARRAY) \
-  include/linux/sched/user.h \
-    $(wildcard include/config/WATCH_QUEUE) \
-  include/linux/percpu_counter.h \
-  include/linux/ratelimit.h \
-  include/linux/rcu_sync.h \
-  include/linux/delayed_call.h \
-  include/linux/uuid.h \
-  include/uapi/linux/uuid.h \
-  include/linux/errseq.h \
-  include/linux/ioprio.h \
-  include/linux/sched/rt.h \
-  include/linux/iocontext.h \
-  include/uapi/linux/ioprio.h \
-  include/linux/fs_types.h \
-  include/linux/mount.h \
-  include/linux/mnt_idmapping.h \
-  include/uapi/linux/fs.h \
-  include/linux/quota.h \
-    $(wildcard include/config/QUOTA_NETLINK_INTERFACE) \
-  include/uapi/linux/dqblk_xfs.h \
-  include/linux/dqblk_v1.h \
-  include/linux/dqblk_v2.h \
-  include/linux/dqblk_qtree.h \
-  include/linux/projid.h \
-  include/uapi/linux/quota.h \
-  include/linux/nfs_fs_i.h \
-  include/linux/usb.h \
-    $(wildcard include/config/USB_MON) \
-    $(wildcard include/config/PM) \
-    $(wildcard include/config/ACPI) \
-    $(wildcard include/config/USB) \
-    $(wildcard include/config/USB_LED_TRIG) \
-  include/linux/mod_devicetable.h \
-  include/linux/usb/ch9.h \
-  include/linux/device.h \
-    $(wildcard include/config/ENERGY_MODEL) \
-    $(wildcard include/config/GENERIC_MSI_IRQ_DOMAIN) \
-    $(wildcard include/config/PINCTRL) \
-    $(wildcard include/config/GENERIC_MSI_IRQ) \
-    $(wildcard include/config/DMA_OPS) \
-    $(wildcard include/config/DMA_DECLARE_COHERENT) \
-    $(wildcard include/config/DMA_CMA) \
-    $(wildcard include/config/SWIOTLB) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_DEVICE) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_CPU) \
-    $(wildcard include/config/ARCH_HAS_SYNC_DMA_FOR_CPU_ALL) \
-    $(wildcard include/config/DMA_OPS_BYPASS) \
-    $(wildcard include/config/OF) \
-    $(wildcard include/config/DEVTMPFS) \
-    $(wildcard include/config/SYSFS_DEPRECATED) \
-  include/linux/dev_printk.h \
   include/linux/energy_model.h \
   include/linux/sched/cpufreq.h \
     $(wildcard include/config/CPU_FREQ) \
@@ -972,27 +872,107 @@ deps_/home/gerald/Desktop/Dev/OS/ProyectoFinal/finger-driver/driver/fingdriver.o
     $(wildcard include/config/PCI_MSI) \
   arch/x86/include/asm/sections.h \
   include/asm-generic/sections.h \
+  arch/x86/include/asm/extable.h \
+    $(wildcard include/config/BPF_JIT) \
+  include/linux/fs.h \
+    $(wildcard include/config/READ_ONLY_THP_FOR_FS) \
+    $(wildcard include/config/FS_POSIX_ACL) \
+    $(wildcard include/config/CGROUP_WRITEBACK) \
+    $(wildcard include/config/IMA) \
+    $(wildcard include/config/FILE_LOCKING) \
+    $(wildcard include/config/FSNOTIFY) \
+    $(wildcard include/config/FS_ENCRYPTION) \
+    $(wildcard include/config/FS_VERITY) \
+    $(wildcard include/config/EPOLL) \
+    $(wildcard include/config/UNICODE) \
+    $(wildcard include/config/QUOTA) \
+    $(wildcard include/config/BLK_DEV_LOOP) \
+    $(wildcard include/config/FS_DAX) \
+    $(wildcard include/config/MIGRATION) \
+  include/linux/wait_bit.h \
+  include/linux/kdev_t.h \
+  include/uapi/linux/kdev_t.h \
+  include/linux/dcache.h \
+  include/linux/rculist_bl.h \
+  include/linux/list_bl.h \
+  include/linux/bit_spinlock.h \
+  include/linux/lockref.h \
+    $(wildcard include/config/ARCH_USE_CMPXCHG_LOCKREF) \
+  include/linux/stringhash.h \
+    $(wildcard include/config/DCACHE_WORD_ACCESS) \
+  include/linux/hash.h \
+    $(wildcard include/config/HAVE_ARCH_HASH) \
+  include/linux/path.h \
+  include/linux/list_lru.h \
+    $(wildcard include/config/MEMCG_KMEM) \
+  include/linux/shrinker.h \
+  include/linux/capability.h \
+  include/uapi/linux/capability.h \
+  include/linux/semaphore.h \
+  include/linux/fcntl.h \
+    $(wildcard include/config/ARCH_32BIT_OFF_T) \
+  include/uapi/linux/fcntl.h \
+  arch/x86/include/generated/uapi/asm/fcntl.h \
+  include/uapi/asm-generic/fcntl.h \
+  include/uapi/linux/openat2.h \
+  include/linux/migrate_mode.h \
+  include/linux/percpu-rwsem.h \
+  include/linux/rcuwait.h \
+  include/linux/sched/signal.h \
+    $(wildcard include/config/SCHED_AUTOGROUP) \
+    $(wildcard include/config/BSD_PROCESS_ACCT) \
+    $(wildcard include/config/TASKSTATS) \
+    $(wildcard include/config/STACK_GROWSUP) \
+  include/linux/signal.h \
+    $(wildcard include/config/DYNAMIC_SIGFRAME) \
+  include/linux/sched/jobctl.h \
+  include/linux/sched/task.h \
+    $(wildcard include/config/HAVE_EXIT_THREAD) \
+    $(wildcard include/config/ARCH_WANTS_DYNAMIC_TASK_STRUCT) \
+    $(wildcard include/config/HAVE_ARCH_THREAD_STRUCT_WHITELIST) \
+  include/linux/uaccess.h \
+    $(wildcard include/config/SET_FS) \
+  include/linux/fault-inject-usercopy.h \
+    $(wildcard include/config/FAULT_INJECTION_USERCOPY) \
+  arch/x86/include/asm/uaccess.h \
+    $(wildcard include/config/CC_HAS_ASM_GOTO_OUTPUT) \
+    $(wildcard include/config/CC_ASM_GOTO_OUTPUT) \
+    $(wildcard include/config/CC_HAS_ASM_GOTO_TIED_OUTPUT) \
+    $(wildcard include/config/ARCH_HAS_COPY_MC) \
+    $(wildcard include/config/X86_INTEL_USERCOPY) \
+  arch/x86/include/asm/smap.h \
+  arch/x86/include/asm/uaccess_64.h \
+  include/linux/cred.h \
+    $(wildcard include/config/DEBUG_CREDENTIALS) \
+  include/linux/key.h \
+    $(wildcard include/config/KEY_NOTIFICATIONS) \
+    $(wildcard include/config/NET) \
+  include/linux/assoc_array.h \
+    $(wildcard include/config/ASSOCIATIVE_ARRAY) \
+  include/linux/sched/user.h \
+    $(wildcard include/config/WATCH_QUEUE) \
+  include/linux/percpu_counter.h \
+  include/linux/rcu_sync.h \
+  include/linux/delayed_call.h \
+  include/linux/errseq.h \
+  include/linux/ioprio.h \
+  include/linux/sched/rt.h \
+  include/linux/iocontext.h \
+  include/uapi/linux/ioprio.h \
+  include/linux/fs_types.h \
+  include/linux/mount.h \
+  include/linux/mnt_idmapping.h \
+  include/uapi/linux/fs.h \
+  include/linux/quota.h \
+    $(wildcard include/config/QUOTA_NETLINK_INTERFACE) \
+  include/uapi/linux/dqblk_xfs.h \
+  include/linux/dqblk_v1.h \
+  include/linux/dqblk_v2.h \
+  include/linux/dqblk_qtree.h \
+  include/linux/projid.h \
+  include/uapi/linux/quota.h \
+  include/linux/nfs_fs_i.h \
   include/linux/pm_runtime.h \
-  include/linux/tty.h \
-    $(wildcard include/config/TTY) \
-  include/uapi/linux/major.h \
-  include/uapi/linux/termios.h \
-  arch/x86/include/generated/uapi/asm/termios.h \
-  include/asm-generic/termios.h \
-  include/uapi/asm-generic/termios.h \
-  arch/x86/include/generated/uapi/asm/termbits.h \
-  include/uapi/asm-generic/termbits.h \
-  arch/x86/include/generated/uapi/asm/ioctls.h \
-  include/uapi/asm-generic/ioctls.h \
-  include/linux/tty_buffer.h \
-  include/linux/tty_driver.h \
-    $(wildcard include/config/CONSOLE_POLL) \
-  include/linux/cdev.h \
-  include/linux/seq_file.h \
-  include/linux/tty_ldisc.h \
-  include/linux/tty_port.h \
-  include/uapi/linux/tty_flags.h \
-  include/uapi/linux/tty.h \
 
 /home/gerald/Desktop/Dev/OS/ProyectoFinal/finger-driver/driver/fingdriver.o: $(deps_/home/gerald/Desktop/Dev/OS/ProyectoFinal/finger-driver/driver/fingdriver.o)
 
