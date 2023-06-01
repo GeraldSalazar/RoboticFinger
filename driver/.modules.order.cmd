@@ -1,0 +1,1 @@
+cmd_/home/daval/Escritorio/Sistemas_operativos/Proyecto_3/RoboticFinger/driver/modules.order := {   echo /home/daval/Escritorio/Sistemas_operativos/Proyecto_3/RoboticFinger/driver/ft232r_driver.ko; :; } | awk '!x[$$0]++' - > /home/daval/Escritorio/Sistemas_operativos/Proyecto_3/RoboticFinger/driver/modules.order
