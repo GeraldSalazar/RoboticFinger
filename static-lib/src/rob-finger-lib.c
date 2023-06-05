@@ -4,10 +4,44 @@
 #include <unistd.h>
 #include <string.h>
 
-void type_0(int num){
+int default_pos(){
     int fd;
-    char f_servo[4];
-    char s_servo[4];
+    char f_servo[] = "F180";
+    char s_servo[] = "S180";
+
+    ssize_t s_written;
+    ssize_t f_written;
+
+    fd = open("/dev/ttyUSB0", O_RDWR);
+
+    if (fd == -1){
+        perror("Error al abrir el dispositivo");
+        return 1;
+    }
+
+    f_written = write(fd, f_servo, sizeof(f_servo) - 1);
+    
+    if (f_written == -1) {
+        perror("Error al escribir en el dispositivo");
+        close(fd);
+        return 1;
+    }
+
+    s_written = write(fd, s_servo, sizeof(s_servo) - 1);
+    
+    if (s_written == -1) {
+        perror("Error al escribir en el dispositivo");
+        close(fd);
+        return 1;
+    }
+
+    close(fd);
+}
+
+int type_0(int num){
+    int fd;
+    char f_servo[5];
+    char s_servo[5];
 
     switch (num)
     {
@@ -52,7 +86,7 @@ void type_0(int num){
         break;
 
     case 8:
-        fstrcpy(f_servo, "F180");
+        strcpy(f_servo, "F180");
         strcpy(s_servo, "S180");
         break;
 
@@ -60,6 +94,12 @@ void type_0(int num){
         strcpy(f_servo, "F180");
         strcpy(s_servo, "S180");
         break;
+    
+    case 10:
+        strcpy(f_servo, "F180");
+        strcpy(s_servo, "S180");
+        break;
+
     
     default:
         break;
@@ -94,39 +134,4 @@ void type_0(int num){
     close(fd);
     
     default_pos();
-}
-
-
-void default_pos(){
-    int fd;
-    char f_servo[] = "F180";
-    char s_servo[] = "S180";
-
-    ssize_t s_written;
-    ssize_t f_written;
-
-    fd = open("/dev/ttyUSB0", O_RDWR);
-
-    if (fd == -1){
-        perror("Error al abrir el dispositivo");
-        return 1;
-    }
-
-    f_written = write(fd, f_servo, sizeof(f_servo) - 1);
-    
-    if (f_written == -1) {
-        perror("Error al escribir en el dispositivo");
-        close(fd);
-        return 1;
-    }
-
-    s_written = write(fd, s_servo, sizeof(s_servo) - 1);
-    
-    if (s_written == -1) {
-        perror("Error al escribir en el dispositivo");
-        close(fd);
-        return 1;
-    }
-
-    close(fd);
 }
