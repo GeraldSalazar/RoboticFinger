@@ -3,13 +3,16 @@
 # Makefile once again.
 # This conditional selects whether we are being included from the
 # kernel Makefile or not.
-
-obj-m += ft232r_driver.o
+# sudo rmmod ftdi_sio
+obj-m += DriverTest1.o
 all:
+	
 	make -C /lib/modules/$(shell uname -r)/build M=$(PWD) modules
+	sudo insmod DriverTest1.ko 
+	sudo dmesg
 clear:
 	make -C /lib/modules/$(shell uname -r)/build M=$(PWD) clean
-
+	sudo rmmod DriverTest1
 test:
 	gcc -o Test Test.c 
-	./Test
+	sudo ./Test

@@ -1,1 +1,0 @@
-cmd_/home/daval/Escritorio/Sistemas_operativos/Proyecto_3/RoboticFinger/driver/ft232r_driver.mod := printf '%s\n'   ft232r_driver.o | awk '!x[$$0]++ { print("/home/daval/Escritorio/Sistemas_operativos/Proyecto_3/RoboticFinger/driver/"$$0) }' > /home/daval/Escritorio/Sistemas_operativos/Proyecto_3/RoboticFinger/driver/ft232r_driver.mod

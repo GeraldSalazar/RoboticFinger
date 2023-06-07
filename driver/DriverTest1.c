@@ -6,6 +6,10 @@
 #include <linux/kref.h>
 #include <linux/usb.h>
 #include <linux/uaccess.h>
+#include <linux/device.h>
+#include <linux/err.h>
+#include <linux/miscdevice.h>
+
 /* Define estos valores para que coincidan con tus dispositivos */
 #define USB_SKEL_VENDOR_ID	0x0403
 #define USB_SKEL_PRODUCT_ID	0x6001
@@ -31,6 +35,8 @@ struct usb_skel {
 };
 #define to_skel_dev(d) container_of(d, struct usb_skel, kref)
 
+static struct class *fingDriver_class;
+static struct device *fingDriver_device;
 static struct usb_driver skel_driver;
 
 static void skel_delete(struct kref *kref)
@@ -136,7 +142,6 @@ static ssize_t skel_write(struct file *file, const char __user *user_buffer, siz
 	int retval = 0;
 	struct urb *urb = NULL;
 	char *buf = NULL;
-	printk(KERN_INFO "HOLA WRITE \n");
 
 	dev = (struct usb_skel *)file->private_data;
 
@@ -174,6 +179,8 @@ static ssize_t skel_write(struct file *file, const char __user *user_buffer, siz
 		goto error;
 	}
     
+	printk(KERN_INFO "HOLA WRITE \n");
+
     /*Hacemos un free de la refernecia del USB*/
 	usb_free_urb(urb);
 
@@ -198,7 +205,7 @@ static struct file_operations skel_fops = {
 
 /* La strucy para nuesotro usb driver*/
 static struct usb_class_driver skel_class = {
-	.name = "usb/skel%d",
+	.name = "fingDriver_%d",
 	.fops = &skel_fops,
 	.minor_base = USB_SKEL_MINOR_BASE,
 };
@@ -260,6 +267,31 @@ static int skel_probe(struct usb_interface *interface, const struct usb_device_i
 	/* save our data pointer in this interface device */
 	usb_set_intfdata(interface, dev);
 
+    // Register a class for the device /
+    fingDriver_class = class_create(THIS_MODULE, "fingDriver");
+    if (fingDriver_class == NULL) {
+      retval = -ENOMEM;
+      goto error;
+    }
+
+    // Create a device in the class 
+    fingDriver_device = device_create(fingDriver_class, NULL, MKDEV(0, 0), NULL, "fingDriver");
+    if (fingDriver_device == NULL) {
+       retval = -ENOMEM;
+       class_destroy(fingDriver_class);
+       fingDriver_class = NULL;
+       goto error;
+    }
+	// /* Create a custom attribute file for the device */
+    
+	//retval = device_create_file(fingDriver_device, &dev_attr_fingdriver);
+    //if (retval) {
+    //     device_destroy(fingDriver_class, MKDEV(0, 0));
+    //     class_destroy(fingDriver_class);
+    //     retval = -EINVAL;
+    //     goto error;
+    // }
+
 	/* Registra el dispositivo como una clase USB */
 	retval = usb_register_dev(interface, &skel_class);
 	if (retval) {
@@ -293,7 +325,10 @@ static void skel_disconnect(struct usb_interface *interface)
 
 	/* Decrementa el contador en nuestro dispositivo */
 	kref_put(&dev->kref, skel_delete);
-
+	// Destroy the device
+    device_destroy(fingDriver_class, MKDEV(0, 0));
+    // Destroy the class 
+    class_destroy(fingDriver_class); 
     
 	dev_info(&interface->dev, "USB Skeleton #%d now disconnected", minor);
 }
@@ -309,7 +344,8 @@ static int __init usb_skel_init(void)
 {
 	int result;
 	printk(KERN_INFO "HOLA MUNDO \n");
-	 /* Registra el controlador USB con el núcleo */
+
+	/* Registra el controlador USB con el núcleo */
 	result = usb_register(&skel_driver);
 	if (result)
 		pr_err("usb_register failed. Error number %d", result);

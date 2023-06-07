@@ -1,1 +1,0 @@
-cmd_/home/daval/Escritorio/Sistemas_operativos/Proyecto_3/RoboticFinger/driver/Module.symvers := sed 's/ko$$/o/' /home/daval/Escritorio/Sistemas_operativos/Proyecto_3/RoboticFinger/driver/modules.order | scripts/mod/modpost -m -a  -o /home/daval/Escritorio/Sistemas_operativos/Proyecto_3/RoboticFinger/driver/Module.symvers -e -i Module.symvers   -T -
