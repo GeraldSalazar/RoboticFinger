@@ -38,25 +38,24 @@ int main() {
 
     while (1) {
 
-        unsigned char received_data[AES_BLOCK_SIZE];
+        unsigned char received_data[AES_BLOCK_SIZE + 1];
         unsigned int len = sizeof(cliaddr);
         // Receive message from client
-        int n = recvfrom(sockfd, received_data, sizeof(received_data), MSG_WAITALL, (struct sockaddr *)&cliaddr, &len);
+        int n = recvfrom(sockfd, received_data, sizeof(received_data) - 1, MSG_WAITALL, (struct sockaddr *)&cliaddr, &len);
         if (n < 0 ) {
             printf("Couldn't receive message from client. recvfrom() failed");
             exit(EXIT_FAILURE);
         }
         received_data[n] = '\0';
-        printf("\033[32m Encrypted data received from client: \033[0m ");
-        for (int i = 0; i < sizeof(received_data); i++) {
-            printf("%02x", received_data[i]);
-        }
-        printf("\n");
-        //desencrypt
-        unsigned char decryptedChar = decrypt(received_data);
-        printf("Decrypted num pad button: %c\n", (char)decryptedChar);
+        printf("\033[32m Encrypted data received from client: \033[0m %s\n", received_data);
 
-        //pasar num a biblioteca
+        // Decrypt the received data
+        unsigned char* decrypted_data = decrypt(received_data);
+        printf("Decrypted num pad buttons: %s\n", decrypted_data);
+
+
+        // Free the memory allocated for decrypted data
+        free(decrypted_data);
     }
 
     close(sockfd);

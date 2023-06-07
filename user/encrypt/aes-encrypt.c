@@ -2,25 +2,25 @@
 unsigned char key[] = "0123456789abcdef";
 unsigned char iv[] = "fedcba9876543210";
 
-unsigned char* encrypt(int inputChar) {
+unsigned char* encrypt(const char* inputString) {
 
     // create an input buffer for the AES algorithm
     unsigned char inputBuf[AES_BLOCK_SIZE];
     memset(inputBuf, 0, AES_BLOCK_SIZE);
-    inputBuf[0] = (unsigned char)inputChar;
 
-    // set up the encryption context
+     // Copy the inputString into the input buffer
+    strncpy((char*)inputBuf, inputString, AES_BLOCK_SIZE);
     
     AES_KEY aes_key;
     AES_set_encrypt_key(key, 128, &aes_key);
 
     // perform AES encryption on the input data
-    unsigned char* output = malloc(AES_BLOCK_SIZE * sizeof(char));
+    unsigned char* output = malloc(AES_BLOCK_SIZE * sizeof(unsigned char));
     AES_cbc_encrypt(inputBuf, output, AES_BLOCK_SIZE, &aes_key, iv, AES_ENCRYPT);
 
     return output;
 }
-unsigned char decrypt(unsigned char* encryptedData) {
+unsigned char* decrypt(unsigned char* encryptedData) {
     unsigned char outputBuf[AES_BLOCK_SIZE];
     memset(outputBuf, 0, AES_BLOCK_SIZE);
 
@@ -29,5 +29,13 @@ unsigned char decrypt(unsigned char* encryptedData) {
 
     AES_cbc_encrypt(encryptedData, outputBuf, AES_BLOCK_SIZE, &aes_key, iv, AES_DECRYPT);
 
-    return outputBuf[0];
+    unsigned char* decryptedData = malloc(AES_BLOCK_SIZE * sizeof(unsigned char));
+    if (decryptedData == NULL) {
+        perror("Memory allocation error");
+        exit(EXIT_FAILURE);
+    }
+
+    memcpy(decryptedData, outputBuf, AES_BLOCK_SIZE);
+
+    return decryptedData;
 }
