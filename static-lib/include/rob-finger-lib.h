@@ -1,5 +1,3 @@
-<<<<<<< Updated upstream
-=======
 
 #include <stdio.h>
 #include <fcntl.h>
@@ -11,4 +9,3 @@ void moveS1(int fd, int deg);
 void moveS2(int fd, int deg);
 void pressEnter(int fd);
 void closeFingDriver(int fd);
->>>>>>> Stashed changes

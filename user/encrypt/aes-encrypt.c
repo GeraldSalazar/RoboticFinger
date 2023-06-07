@@ -20,8 +20,6 @@ unsigned char* encrypt(const char* inputString) {
 
     return output;
 }
-<<<<<<< Updated upstream
-=======
 unsigned char* decrypt(unsigned char* encryptedData) {
     unsigned char outputBuf[AES_BLOCK_SIZE];
     memset(outputBuf, 0, AES_BLOCK_SIZE);
@@ -41,4 +39,3 @@ unsigned char* decrypt(unsigned char* encryptedData) {
 
     return decryptedData;
 }
->>>>>>> Stashed changes

@@ -80,8 +80,6 @@ int main() {
             printf("%02x", received_data[i]);
         }
         printf("\n");
-<<<<<<< Updated upstream
-=======
         
         // Decrypt the received data
         decrypted_data = decrypt(received_data);
@@ -105,7 +103,6 @@ int main() {
         // Free the memory allocated for decrypted data
         free(decrypted_data);    
         
->>>>>>> Stashed changes
     }
 
     close(sockfd);

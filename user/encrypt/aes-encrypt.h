@@ -7,12 +7,7 @@
 #include <openssl/aes.h>
 #include <ctype.h>
 
-<<<<<<< Updated upstream
-unsigned char* encrypt(int inputChar);
-
-=======
 unsigned char* encrypt(const char* inputString);
 unsigned char* decrypt(unsigned char* encryptedData);
->>>>>>> Stashed changes
 
 #endif
