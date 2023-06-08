@@ -62,11 +62,11 @@ static const char *ftdi_chip_name[] = {
 };
 
 /* function prototypes for a FTDI serial converter */
-static int  ftdi_sio_probe(struct usb_serial *serial,const struct usb_device_id *id);
-static int  ftdi_sio_port_probe(struct usb_serial_port *port);
-static void ftdi_sio_port_remove(struct usb_serial_port *port);
-static int  ftdi_open(struct tty_struct *tty, struct usb_serial_port *port);
-static int ftdi_prepare_write_buffer(struct usb_serial_port *port,void *dest, size_t size);
+static int  probe(struct usb_serial *serial,const struct usb_device_id *id);
+static int  port_probe(struct usb_serial_port *port);
+static void port_remove(struct usb_serial_port *port);
+static int  open(struct tty_struct *tty, struct usb_serial_port *port);
+static int write(struct usb_serial_port *port,void *dest, size_t size);
 
 static struct usb_serial_driver ftdi_sio_device = {
 	.driver = {
@@ -76,11 +76,11 @@ static struct usb_serial_driver ftdi_sio_device = {
 	.description =		"USB Seria Test - Aldo",
 	.id_table =		id_table_combined,
 	.num_ports =		1,
-	.probe =		ftdi_sio_probe,
-	.port_probe =		ftdi_sio_port_probe,
-	.port_remove =		ftdi_sio_port_remove,
-	.open =			ftdi_open,
-	.prepare_write_buffer =	ftdi_prepare_write_buffer,
+	.probe =		probe,
+	.port_probe =		port_probe,
+	.port_remove =		port_remove,
+	.open =			open,
+	.prepare_write_buffer =	write,
 };
 
 static struct usb_serial_driver * const serial_drivers[] = {
@@ -96,10 +96,6 @@ static int write_latency_timer(struct usb_serial_port *port)
 	struct usb_device *udev = port->serial->dev;
 	int rv;
 	int l = priv->latency;
-
-	if (priv->chip_type == SIO || priv->chip_type == FT8U232AM)
-		return -EINVAL;
-
 	if (priv->flags & ASYNC_LOW_LATENCY)
 		l = 1;
 
@@ -133,13 +129,9 @@ static int _read_latency_timer(struct usb_serial_port *port)
 	return rv;
 }
 
-static int read_latency_timer(struct usb_serial_port *port)
-{
+static int read_latency_timer(struct usb_serial_port *port){
 	struct ftdi_private *priv = usb_get_serial_port_data(port);
 	int rv;
-
-	if (priv->chip_type == SIO || priv->chip_type == FT8U232AM)
-		return -EINVAL;
 
 	rv = _read_latency_timer(port);
 	if (rv < 0) {
@@ -151,16 +143,13 @@ static int read_latency_timer(struct usb_serial_port *port)
 
 	return 0;
 }
-/* Determine type of FTDI chip based on USB config and descriptor. */
-static void ftdi_determine_type(struct usb_serial_port *port)
-{
+// Determina el tipo de chip en base a la config del USB
+static void ftdi_determine_type(struct usb_serial_port *port){
 	struct ftdi_private *priv = usb_get_serial_port_data(port);
 	struct usb_serial *serial = port->serial;
 	struct usb_device *udev = serial->dev;
 	unsigned version;
 	unsigned interfaces;
-
-	/* Assume it is not the original SIO device for now. */
 	priv->baud_base = 48000000 / 2;
 
 	version = le16_to_cpu(udev->descriptor.bcdDevice);
@@ -168,20 +157,15 @@ static void ftdi_determine_type(struct usb_serial_port *port)
 	dev_dbg(&port->dev, "%s: bcdDevice = 0x%x, bNumInterfaces = %u\n", __func__,
 		version, interfaces);
 	if (version < 0x900) {
-		/* Assume it's an FT232RL */
+		/*FT232RL */
 		priv->chip_type = FT232RL;
 	} 
 
 	dev_info(&udev->dev, "Detected %s\n", ftdi_chip_name[priv->chip_type]);
 }
 
-/*
- * Determine the maximum packet size for the device. This depends on the chip
- * type and the USB host capabilities. The value should be obtained from the
- * device descriptor as the chip will use the appropriate values for the host.
- */
-static void ftdi_set_max_packet_size(struct usb_serial_port *port)
-{
+//El tamaño maximo del paquete
+static void ftdi_set_max_packet_size(struct usb_serial_port *port){
 	struct ftdi_private *priv = usb_get_serial_port_data(port);
 	struct usb_interface *interface = port->serial->interface;
 	struct usb_endpoint_descriptor *ep_desc;
@@ -203,11 +187,8 @@ static void ftdi_set_max_packet_size(struct usb_serial_port *port)
 	priv->max_packet_size = usb_endpoint_maxp(ep_desc);
 }
 
-//
 // Atributos del Sysfs
-//
-static ssize_t latency_timer_show(struct device *dev, struct device_attribute *attr, char *buf)
-{
+static ssize_t latency_timer_show(struct device *dev, struct device_attribute *attr, char *buf){
 	struct usb_serial_port *port = to_usb_serial_port(dev);
 	struct ftdi_private *priv = usb_get_serial_port_data(port);
 	if (priv->flags & ASYNC_LOW_LATENCY)
@@ -216,11 +197,8 @@ static ssize_t latency_timer_show(struct device *dev, struct device_attribute *a
 		return sprintf(buf, "%u\n", priv->latency);
 }
 
-/* Write a new value of the latency timer, in units of milliseconds. */
-static ssize_t latency_timer_store(struct device *dev,
-				   struct device_attribute *attr,
-				   const char *valbuf, size_t count)
-{
+/* Latencia en milisegundos */
+static ssize_t latency_timer_store(struct device *dev,struct device_attribute *attr,const char *valbuf, size_t count){
 	struct usb_serial_port *port = to_usb_serial_port(dev);
 	struct ftdi_private *priv = usb_get_serial_port_data(port);
 	u8 v;
@@ -237,11 +215,8 @@ static ssize_t latency_timer_store(struct device *dev,
 }
 static DEVICE_ATTR_RW(latency_timer);
 
-/* Write an event character directly to the FTDI register.  The ASCII
-   value is in the low 8 bits, with the enable bit in the 9th bit. */
-static ssize_t event_char_store(struct device *dev,
-	struct device_attribute *attr, const char *valbuf, size_t count)
-{
+// Escribimos el evento en el FTDI
+static ssize_t event_char_store(struct device *dev,struct device_attribute *attr, const char *valbuf, size_t count){
 	struct usb_serial_port *port = to_usb_serial_port(dev);
 	struct ftdi_private *priv = usb_get_serial_port_data(port);
 	struct usb_device *udev = port->serial->dev;
@@ -268,8 +243,7 @@ static ssize_t event_char_store(struct device *dev,
 }
 static DEVICE_ATTR_WO(event_char);
 
-static int create_sysfs_attrs(struct usb_serial_port *port)
-{
+static int create_sysfs_attrs(struct usb_serial_port *port){
 	struct ftdi_private *priv = usb_get_serial_port_data(port);
 	int retval = 0;
 	if (priv->chip_type != SIO) {
@@ -284,8 +258,7 @@ static int create_sysfs_attrs(struct usb_serial_port *port)
 	return retval;
 }
 
-static void remove_sysfs_attrs(struct usb_serial_port *port)
-{
+static void remove_sysfs_attrs(struct usb_serial_port *port){
 	struct ftdi_private *priv = usb_get_serial_port_data(port);
 	if (priv->chip_type != SIO) {
 		device_remove_file(&port->dev, &dev_attr_event_char);
@@ -298,8 +271,7 @@ static void remove_sysfs_attrs(struct usb_serial_port *port)
 
 #ifdef CONFIG_GPIOLIB
 
-static int ftdi_set_bitmode(struct usb_serial_port *port, u8 mode)
-{
+static int ftdi_set_bitmode(struct usb_serial_port *port, u8 mode){
 	struct ftdi_private *priv = usb_get_serial_port_data(port);
 	struct usb_serial *serial = port->serial;
 	int result;
@@ -326,13 +298,11 @@ static int ftdi_set_bitmode(struct usb_serial_port *port, u8 mode)
 	return result;
 }
 
-static int ftdi_set_cbus_pins(struct usb_serial_port *port)
-{
+static int ftdi_set_cbus_pins(struct usb_serial_port *port){
 	return ftdi_set_bitmode(port, FTDI_SIO_BITMODE_CBUS);
 }
 
-static int ftdi_exit_cbus_mode(struct usb_serial_port *port)
-{
+static int ftdi_exit_cbus_mode(struct usb_serial_port *port){
 	struct ftdi_private *priv = usb_get_serial_port_data(port);
 
 	priv->gpio_output = 0;
@@ -364,8 +334,7 @@ static int ftdi_gpio_request(struct gpio_chip *gc, unsigned int offset)
 	return 0;
 }
 
-static int ftdi_read_cbus_pins(struct usb_serial_port *port)
-{
+static int ftdi_read_cbus_pins(struct usb_serial_port *port){
 	struct ftdi_private *priv = usb_get_serial_port_data(port);
 	struct usb_serial *serial = port->serial;
 	u8 buf;
@@ -388,8 +357,7 @@ static int ftdi_read_cbus_pins(struct usb_serial_port *port)
 	return result;
 }
 
-static int ftdi_gpio_get(struct gpio_chip *gc, unsigned int gpio)
-{
+static int ftdi_gpio_get(struct gpio_chip *gc, unsigned int gpio){
 	struct usb_serial_port *port = gpiochip_get_data(gc);
 	int result;
 
@@ -400,8 +368,7 @@ static int ftdi_gpio_get(struct gpio_chip *gc, unsigned int gpio)
 	return !!(result & BIT(gpio));
 }
 
-static void ftdi_gpio_set(struct gpio_chip *gc, unsigned int gpio, int value)
-{
+static void ftdi_gpio_set(struct gpio_chip *gc, unsigned int gpio, int value){
 	struct usb_serial_port *port = gpiochip_get_data(gc);
 	struct ftdi_private *priv = usb_get_serial_port_data(port);
 
@@ -417,9 +384,7 @@ static void ftdi_gpio_set(struct gpio_chip *gc, unsigned int gpio, int value)
 	mutex_unlock(&priv->gpio_lock);
 }
 
-static int ftdi_gpio_get_multiple(struct gpio_chip *gc, unsigned long *mask,
-					unsigned long *bits)
-{
+static int ftdi_gpio_get_multiple(struct gpio_chip *gc, unsigned long *mask,unsigned long *bits){
 	struct usb_serial_port *port = gpiochip_get_data(gc);
 	int result;
 
@@ -432,9 +397,7 @@ static int ftdi_gpio_get_multiple(struct gpio_chip *gc, unsigned long *mask,
 	return 0;
 }
 
-static void ftdi_gpio_set_multiple(struct gpio_chip *gc, unsigned long *mask,
-					unsigned long *bits)
-{
+static void ftdi_gpio_set_multiple(struct gpio_chip *gc, unsigned long *mask,unsigned long *bits){
 	struct usb_serial_port *port = gpiochip_get_data(gc);
 	struct ftdi_private *priv = usb_get_serial_port_data(port);
 
@@ -447,16 +410,14 @@ static void ftdi_gpio_set_multiple(struct gpio_chip *gc, unsigned long *mask,
 	mutex_unlock(&priv->gpio_lock);
 }
 
-static int ftdi_gpio_direction_get(struct gpio_chip *gc, unsigned int gpio)
-{
+static int ftdi_gpio_direction_get(struct gpio_chip *gc, unsigned int gpio){
 	struct usb_serial_port *port = gpiochip_get_data(gc);
 	struct ftdi_private *priv = usb_get_serial_port_data(port);
 
 	return !(priv->gpio_output & BIT(gpio));
 }
 
-static int ftdi_gpio_direction_input(struct gpio_chip *gc, unsigned int gpio)
-{
+static int ftdi_gpio_direction_input(struct gpio_chip *gc, unsigned int gpio){
 	struct usb_serial_port *port = gpiochip_get_data(gc);
 	struct ftdi_private *priv = usb_get_serial_port_data(port);
 	int result;
@@ -471,9 +432,7 @@ static int ftdi_gpio_direction_input(struct gpio_chip *gc, unsigned int gpio)
 	return result;
 }
 
-static int ftdi_gpio_direction_output(struct gpio_chip *gc, unsigned int gpio,
-					int value)
-{
+static int ftdi_gpio_direction_output(struct gpio_chip *gc, unsigned int gpio,int value){
 	struct usb_serial_port *port = gpiochip_get_data(gc);
 	struct ftdi_private *priv = usb_get_serial_port_data(port);
 	int result;
@@ -493,10 +452,7 @@ static int ftdi_gpio_direction_output(struct gpio_chip *gc, unsigned int gpio,
 	return result;
 }
 
-static int ftdi_gpio_init_valid_mask(struct gpio_chip *gc,
-				     unsigned long *valid_mask,
-				     unsigned int ngpios)
-{
+static int ftdi_gpio_init_valid_mask(struct gpio_chip *gc,unsigned long *valid_mask,unsigned int ngpios){
 	struct usb_serial_port *port = gpiochip_get_data(gc);
 	struct ftdi_private *priv = usb_get_serial_port_data(port);
 	unsigned long map = priv->gpio_altfunc;
@@ -512,9 +468,7 @@ static int ftdi_gpio_init_valid_mask(struct gpio_chip *gc,
 	return 0;
 }
 
-static int ftdi_read_eeprom(struct usb_serial *serial, void *dst, u16 addr,
-				u16 nbytes)
-{
+static int ftdi_read_eeprom(struct usb_serial *serial, void *dst, u16 addr,u16 nbytes){
 	int read = 0;
 
 	if (addr % 2 != 0)
@@ -543,8 +497,7 @@ static int ftdi_read_eeprom(struct usb_serial *serial, void *dst, u16 addr,
 	return 0;
 }
 
-static int ftdi_gpio_init_ft232r(struct usb_serial_port *port)
-{
+static int ftdi_gpio_init_ft232r(struct usb_serial_port *port){
 	struct ftdi_private *priv = usb_get_serial_port_data(port);
 	u16 cbus_config;
 	u8 *buf;
@@ -576,8 +529,7 @@ out_free:
 	return ret;
 }
 
-static int ftdi_gpio_init(struct usb_serial_port *port)
-{
+static int ftdi_gpio_init(struct usb_serial_port *port){
 	struct ftdi_private *priv = usb_get_serial_port_data(port);
 	struct usb_serial *serial = port->serial;
 	int result;
@@ -610,8 +562,7 @@ static int ftdi_gpio_init(struct usb_serial_port *port)
 	return result;
 }
 
-static void ftdi_gpio_remove(struct usb_serial_port *port)
-{
+static void ftdi_gpio_remove(struct usb_serial_port *port){
 	struct ftdi_private *priv = usb_get_serial_port_data(port);
 
 	if (priv->gpio_registered) {
@@ -625,11 +576,8 @@ static void ftdi_gpio_remove(struct usb_serial_port *port)
 		priv->gpio_used = false;
 	}
 }
-
 #else
-
-static int ftdi_gpio_init(struct usb_serial_port *port)
-{
+static int ftdi_gpio_init(struct usb_serial_port *port){
 	return 0;
 }
 
@@ -637,11 +585,8 @@ static void ftdi_gpio_remove(struct usb_serial_port *port) { }
 
 #endif	/* CONFIG_GPIOLIB */
 
-//
 // Funciones del file operatior
-//
-static int ftdi_sio_probe(struct usb_serial *serial,const struct usb_device_id *id)
-{
+static int probe(struct usb_serial *serial,const struct usb_device_id *id){
 	const struct ftdi_sio_quirk *quirk =(struct ftdi_sio_quirk *)id->driver_info;
 
 	if (quirk && quirk->probe) {
@@ -655,8 +600,7 @@ static int ftdi_sio_probe(struct usb_serial *serial,const struct usb_device_id *
 	return 0;
 }
 
-static int ftdi_sio_port_probe(struct usb_serial_port *port)
-{
+static int port_probe(struct usb_serial_port *port){
 	struct ftdi_private *priv;
 	const struct ftdi_sio_quirk *quirk = usb_get_serial_data(port->serial);
 	int result;
@@ -681,16 +625,12 @@ static int ftdi_sio_port_probe(struct usb_serial_port *port)
 
 	result = ftdi_gpio_init(port);
 	if (result < 0) {
-		dev_err(&port->serial->interface->dev,
-			"GPIO initialisation failed: %d\n",
-			result);
+		dev_err(&port->serial->interface->dev,"GPIO initialisation failed: %d\n",result);
 	}
-
 	return 0;
 }
 
-static void ftdi_sio_port_remove(struct usb_serial_port *port)
-{
+static void port_remove(struct usb_serial_port *port){
 	struct ftdi_private *priv = usb_get_serial_port_data(port);
 
 	ftdi_gpio_remove(port);
@@ -700,8 +640,7 @@ static void ftdi_sio_port_remove(struct usb_serial_port *port)
 	kfree(priv);
 }
 
-static int ftdi_open(struct tty_struct *tty, struct usb_serial_port *port)
-{
+static int open(struct tty_struct *tty, struct usb_serial_port *port){
 	struct usb_device *dev = port->serial->dev;
 	struct ftdi_private *priv = usb_get_serial_port_data(port);
 	usb_control_msg(dev, usb_sndctrlpipe(dev, 0),
@@ -712,7 +651,7 @@ static int ftdi_open(struct tty_struct *tty, struct usb_serial_port *port)
 	return usb_serial_generic_open(tty, port);
 }
 
-static int ftdi_prepare_write_buffer(struct usb_serial_port *port,void *dest, size_t size){
+static int write(struct usb_serial_port *port,void *dest, size_t size){
 	struct ftdi_private *priv;
 	int count;
 	unsigned long flags;
@@ -735,8 +674,7 @@ static int ftdi_prepare_write_buffer(struct usb_serial_port *port,void *dest, si
 		}
 		spin_unlock_irqrestore(&port->lock, flags);
 	} else {
-		count = kfifo_out_locked(&port->write_fifo, dest, size,
-								&port->lock);
+		count = kfifo_out_locked(&port->write_fifo, dest, size,&port->lock);
 		port->icount.tx += count;
 	}
 	return count;

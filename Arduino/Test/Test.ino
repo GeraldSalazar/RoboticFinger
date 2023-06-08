@@ -12,8 +12,8 @@ void setup() {
   Serial.begin(9600); // Inicia la comunicación serial
   pinMode(pinW, INPUT); // Configura el pin 0 como entrada (rx)
   pinMode(pinR, OUTPUT); // Configura el pin 1 como salida (tx)
-  servoMotorF.attach(9); //Attach to Pin 9
-  servoMotorS.attach(5); //Attach to Pin 5
+  servoMotorF.attach(9); //Attach to Pin 9 (Azul)
+  servoMotorS.attach(5); //Attach to Pin 5 (Negro)
 }
 
 void loop() {
@@ -29,7 +29,6 @@ void loop() {
       Serial.print("El número es: ");
       Serial.println(number);
       servoMotorS.write(number); 
-      
     } else if (firstChar == 'F') {
       // Si es 'F'
       Serial.println("Se recibió una 'F'");

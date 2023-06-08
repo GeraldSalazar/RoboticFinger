@@ -16,7 +16,7 @@
 const char* device_path = "/dev/ttyUSB0";
 
 void mapNum(unsigned char *numero);
-
+void pressButtonE(int numero);
 int main() {
     struct sockaddr_in servaddr, cliaddr;
     int number;
@@ -38,29 +38,17 @@ int main() {
     if (bind(sockfd, (const struct sockaddr *)&servaddr, sizeof(servaddr)) < 0 ) {
         printf("Couldn't bind the socket");
         exit(EXIT_FAILURE);
-    }
-    //El archivo del driver
-    int fd = openFingDriver(device_path);
-    
+    }    
     // Inicializar el semáforo
-    //sem_t *sem;
+    // sem_t *sem;
     
-    // Crear sem con nombre "sem" y un valor inicial de 1
-    //sem = sem_open("/sem", O_CREAT | O_EXCL, 0644, 1);
-    //if (sem == SEM_FAILED) {
+    // // Crear sem con nombre "sem" y un valor inicial de 1
+    // sem = sem_open("/sem", O_CREAT | O_EXCL, 0644, 1);
+    // if (sem == SEM_FAILED) {
     //    perror("sem_open");
     //    exit(1);
-    //}
-
-    // if (fd != -1) {
-    //     moveS1(fd, 90);
-    //     //sleep(1000);
-    //     //moveS1(fd, 0);
-    //     //sleep(1000);
-    //     //moveS2(fd, 1);
-    //     //pressEnter(fd);
-    //     closeFingDriver(fd);
     // }
+    
     unsigned char* decrypted_data;
 
     printf("UDP server listening on port %d\n", PORT);
@@ -88,7 +76,7 @@ int main() {
         
         ///////////////////////////////
         //sem_wait(sem);
-        
+
         pid_t pid = fork();
         if(pid == 0){
             mapNum(decrypted_data);
@@ -96,13 +84,11 @@ int main() {
         }else{
             wait(NULL);
         }
-        
         //sem_post(sem);
         ///////////////////////////////
 
         // Free the memory allocated for decrypted data
-        free(decrypted_data);    
-        
+        free(decrypted_data);
     }
 
     close(sockfd);
@@ -112,34 +98,34 @@ void mapNum(unsigned char *numero){
     for (int i = 0; numero[i] != '\0'; i++) {
         switch (numero[i]) {
             case '0':
-                printf("Cero\n");
+                pressButtonE(10);
                 break;
             case '1':
-                printf("Uno\n");
+                pressButtonE(20);
                 break;
             case '2':
-                printf("Dos\n");
+                pressButtonE(30);
                 break;
             case '3':
-                printf("Tres\n");
+                pressButtonE(40);
                 break;
             case '4':
-                printf("Cuatro\n");
+                pressButtonE(50);
                 break;
             case '5':
-                printf("Cinco\n");
+                pressButtonE(60);
                 break;
             case '6':
-                printf("Seis\n");
+                pressButtonE(70);
                 break;
             case '7':
-                printf("Siete\n");
+                pressButtonE(80);
                 break;
             case '8':
-                printf("Ocho\n");
+                pressButtonE(90);
                 break;
             case '9':
-                printf("Nueve\n");
+                pressButtonE(100);
                 break;
             default:
                 printf("Carácter no reconocido\n");
@@ -147,4 +133,21 @@ void mapNum(unsigned char *numero){
         }
     }
     
+}
+void pressButtonE(int numero){
+    int fd = openFingDriver(device_path);
+    moveS1(fd, numero); 
+    closeFingDriver(fd); //Servo azul, izq - der
+    sleep(2);
+    
+    fd = openFingDriver(device_path);
+    moveS2(fd, 100); //Servo negro pos neutral
+    moveS2(fd, 60);  //Bajar
+    closeFingDriver(fd);
+    sleep(2);
+    
+    fd = openFingDriver(device_path);
+    moveS2(fd, 100);  //Subir
+    closeFingDriver(fd);
+    sleep(2);
 }

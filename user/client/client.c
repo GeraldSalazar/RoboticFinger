@@ -12,7 +12,8 @@
 
 int main() {
     struct sockaddr_in server_address;
-
+    //sem_unlink("/sem");
+    
     // create UDP socket
     int client_socket;
     if ((client_socket = socket(AF_INET, SOCK_DGRAM, 0)) < 0) {
@@ -30,8 +31,8 @@ int main() {
         exit(EXIT_FAILURE);
     }
      /* Inicializar semáforos */
-    sem_t *sem;
-    sem = sem_open("/sem",0);
+    //sem_t *sem;
+    //sem = sem_open("/sem",0);
     while(1) {
 
         char inputString[MAX_INPUT_LENGTH];
